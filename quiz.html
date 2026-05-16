@@ -102,6 +102,10 @@ button{
 
 <div id="explanation"></div>
 
+<button class="nextBtn" id="submitBtn" onclick="submitAnswer()">
+回答する
+</button>
+
 <button class="nextBtn" id="nextBtn" onclick="nextQuestion()">
 次の問題へ
 </button>
@@ -190,19 +194,40 @@ function loadQuiz(){
 
         btn.innerText = choice.text;
 
-        btn.onclick = () => checkAnswer(choice);
+        btn.onclick = () => {
+            btn.classList.toggle("selected");
+        };
 
         choicesDiv.appendChild(btn);
 
     });
 
 }
-
-function checkAnswer(selectedChoice){
+function submitAnswer(){
 
     const quiz = quizList[currentQuiz];
 
     const buttons = document.querySelectorAll(".choice");
+
+    let selectedChoices = [];
+
+    buttons.forEach((btn, index) => {
+
+        const choice = quiz.choices[index];
+
+        if(btn.classList.contains("selected")){
+            selectedChoices.push(choice.text);
+        }
+
+    });
+
+    const correctChoices = quiz.choices
+        .filter(c => c.correct)
+        .map(c => c.text);
+
+    const isCorrect =
+        selectedChoices.length === correctChoices.length &&
+        selectedChoices.every(c => correctChoices.includes(c));
 
     buttons.forEach((btn, index) => {
 
@@ -214,33 +239,36 @@ function checkAnswer(selectedChoice){
             btn.classList.add("correct");
         }
 
-        if(choice.text === selectedChoice.text && !choice.correct){
+        if(
+            btn.classList.contains("selected") &&
+            !choice.correct
+        ){
             btn.classList.add("wrong");
         }
 
     });
 
-    if(selectedChoice.correct){
+    if(isCorrect){
 
         score++;
 
-        document.getElementById("result").innerHTML = "⭕ 正解！";
+        document.getElementById("result").innerHTML =
+            "⭕ 正解！";
 
     }else{
 
         wrongQuestions.push(quiz);
 
-        const correctAnswer =
-            quiz.choices.find(c => c.correct).text;
-
         document.getElementById("result").innerHTML =
-            `❌ 不正解！ 正解は「${correctAnswer}」`;
-
+            `❌ 不正解！`;
     }
 
     document.getElementById("explanation").innerHTML =
         "<strong>解説：</strong><br>" +
-        selectedChoice.explanation;
+        quiz.choices
+            .filter(c => c.correct)
+            .map(c => "・" + c.explanation)
+            .join("<br>");
 
 }
 
@@ -320,11 +348,12 @@ function retryWrongQuestions(){
     loadQuiz();
 
 }
-
+.selected{
+    background:#90CAF9;
+}
 loadCategories();
 
 </script>
 
 </body>
 </html>
-```
