@@ -104,7 +104,10 @@ button{
 
 <div id="explanation"></div>
 
-<button class="nextBtn" id="submitBtn" onclick="submitAnswer()">
+<button class="nextBtn"
+id="nextBtn"
+onclick="nextQuestion()"
+style="display:none;">
 回答する
 </button>
 
@@ -173,6 +176,9 @@ function startQuiz(category){
 }
 
 function loadQuiz(){
+
+    document.getElementById("nextBtn").style.display = "none";
+    document.getElementById("submitBtn").disabled = false;
 
     document.getElementById("result").innerHTML = "";
     document.getElementById("explanation").innerHTML = "";
@@ -272,6 +278,9 @@ function submitAnswer(){
             .filter(c => c.correct)
             .map(c => "・" + c.explanation)
             .join("<br>");
+
+    document.getElementById("nextBtn").style.display = "block";
+    document.getElementById("submitBtn").disabled = true;
 
 }
 
