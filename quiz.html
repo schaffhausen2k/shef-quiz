@@ -355,7 +355,16 @@ function retryWrongQuestions(){
         <div id="result"></div>
         <div id="explanation"></div>
 
-        <button class="nextBtn" onclick="nextQuestion()">
+        <button class="nextBtn"
+        id="submitBtn"
+        onclick="submitAnswer()">
+        回答する
+        </button>
+
+        <button class="nextBtn"
+        id="nextBtn"
+        onclick="nextQuestion()"
+        style="display:none;">
         次の問題へ
         </button>
 
