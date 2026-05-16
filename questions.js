@@ -1,4 +1,3 @@
-"</> JavaScript"
 const questions = [
 
 {
@@ -128,4 +127,3 @@ explanation:"文化差により食習慣が異なります。"
 }
 
 ];
-```
