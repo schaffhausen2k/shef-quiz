@@ -41,7 +41,7 @@ button{
 }
 
 .choice:hover{
-    background:#d0d0d0;
+    opacity:0.8;
 }
 .selected{
     background:#90CAF9;
@@ -177,6 +177,7 @@ function startQuiz(category){
 
 function loadQuiz(){
 
+    document.getElementById("choices").innerHTML = "";
     document.getElementById("nextBtn").style.display = "none";
     document.getElementById("submitBtn").disabled = false;
 
@@ -238,24 +239,26 @@ function submitAnswer(){
         selectedChoices.length === correctChoices.length &&
         selectedChoices.every(c => correctChoices.includes(c));
 
-    buttons.forEach((btn, index) => {
+buttons.forEach((btn, index) => {
 
-        btn.disabled = true;
+    btn.disabled = true;
 
-        const choice = quiz.choices[index];
+    const choice = quiz.choices[index];
 
-        if(choice.correct){
-            btn.classList.add("correct");
-        }
+    const wasSelected =
+        btn.classList.contains("selected");
 
-        if(
-            btn.classList.contains("selected") &&
-            !choice.correct
-        ){
-            btn.classList.add("wrong");
-        }
+    btn.classList.remove("selected");
 
-    });
+    if(choice.correct){
+        btn.classList.add("correct");
+    }
+
+    if(wasSelected && !choice.correct){
+        btn.classList.add("wrong");
+    }
+
+});
 
     if(isCorrect){
 
