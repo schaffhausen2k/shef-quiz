@@ -1,4 +1,4 @@
-</> javascript id="qjs001"
+</> JavaScript
 const questions = [
 
 {
