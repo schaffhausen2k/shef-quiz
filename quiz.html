@@ -187,7 +187,8 @@ function loadQuiz(){
         const btn = document.createElement("button");
 
         btn.className = "choice";
-        btn.innerText = choice;
+
+        btn.innerText = choice.text;
 
         btn.onclick = () => checkAnswer(choice);
 
@@ -197,25 +198,29 @@ function loadQuiz(){
 
 }
 
-function checkAnswer(selected){
+function checkAnswer(selectedChoice){
 
     const quiz = quizList[currentQuiz];
 
     const buttons = document.querySelectorAll(".choice");
 
-    buttons.forEach(btn => {
+    buttons.forEach((btn, index) => {
+
         btn.disabled = true;
 
-        if(btn.innerText === quiz.answer){
+        const choice = quiz.choices[index];
+
+        if(choice.correct){
             btn.classList.add("correct");
         }
 
-        if(btn.innerText === selected && selected !== quiz.answer){
+        if(choice.text === selectedChoice.text && !choice.correct){
             btn.classList.add("wrong");
         }
+
     });
 
-    if(selected === quiz.answer){
+    if(selectedChoice.correct){
 
         score++;
 
@@ -225,13 +230,17 @@ function checkAnswer(selected){
 
         wrongQuestions.push(quiz);
 
+        const correctAnswer =
+            quiz.choices.find(c => c.correct).text;
+
         document.getElementById("result").innerHTML =
-            `❌ 不正解！ 正解は「${quiz.answer}」`;
+            `❌ 不正解！ 正解は「${correctAnswer}」`;
 
     }
 
     document.getElementById("explanation").innerHTML =
-        "<strong>解説：</strong><br>" + quiz.explanation;
+        "<strong>解説：</strong><br>" +
+        selectedChoice.explanation;
 
 }
 
