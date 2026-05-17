@@ -3859,7 +3859,7 @@ const questions = [
         explanation: "洗浄だけでは十分な不活化はできません。"
       }
     ]
-  }
+  },
 
 {
   category: "フードセーフティ論",
