@@ -1513,7 +1513,7 @@ const questions = [
       explanation: "空腹時血糖110mg/dL以上は診断基準の一つです。"
     }
   ]
-},{
+},{
   category: "フードセーフティ論",
   question: "現代の食の安全が昔より難しくなっている主な理由はどれか。",
   choices: [
