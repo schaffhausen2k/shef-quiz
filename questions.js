@@ -6037,7 +6037,8 @@ const questions = [
       explanation: "栄養指導は主に栄養教諭や栄養士の役割です。"
     }
   ]
-},const questions = [
+},
+
   {
     category: "調理理論",
     question: "調理は食品を（　　）にする調理操作です。（　　）に入る言葉を選んでください。",
@@ -6306,10 +6307,8 @@ const questions = [
         explanation: "見た目の美しさは食欲や満足感を高める効果があります。"
       }
     ]
-  }
-];
+  },
 
-export default questions;const questions = [
   {
     category: "調理理論",
     question: "食べ物のおいしさとして、正しいものを選んでください。（複数回答可）",
@@ -8906,7 +8905,7 @@ export default questions;const questions = [
         explanation: "いかは日本では日常的な食材ですが、海外では独特な見た目から敬遠されることがあります。"
       }
     ]
-  }
+  },
   {
     category: "世界の食通信",
     question: "農耕文化の伝播と変容速度を急激に変えた時代は、次の内どれでしょうか。",
@@ -9180,7 +9179,7 @@ export default questions;const questions = [
         explanation: "現在の飯は、当時の固がゆに相当する『姫飯』と呼ばれていました。"
       }
     ]
-  }
+  },
 
 
   {
@@ -9451,7 +9450,7 @@ export default questions;const questions = [
         explanation: "西アジアでは小麦文化が中心であり、米を主食とする地域ではありません。"
       }
     ]
-  }
+  },
   {
     category: "世界の食通信",
     question: "ナイフやフォークが食卓の食器となったきっかけは、16世紀にイタリア「フィレンチェの大富豪」のカトリーヌがフランスのオルレアン公に嫁いだことによるといわれています。フィレンチェの大富豪とは誰のことでしょうか。次の中から選んでください。",
@@ -9720,7 +9719,7 @@ export default questions;const questions = [
         explanation: "設問では環境や食料問題への対策が重視されており、経済発展は優先順位が低いとされています。"
       }
     ]
-  }
+  },
   {
     category: "世界の食通信",
     question: "安土桃山時代に、中国や朝鮮、ポルトガルやスペインなどの南蛮文化が取り入れられましたが、下記の中で間違っているものはどれでしょうか。",
@@ -9989,7 +9988,7 @@ export default questions;const questions = [
         explanation: "ファミリーレストランは外食施設であり、食材購入施設ではありません。"
       }
     ]
-  }
+  },
   {
     category: "世界の食通信",
     question: "日本料理の特徴として、間違っているものは次の内どれでしょうか。Ⅰ",
