@@ -368,12 +368,10 @@ document.getElementById("nextBtn").onclick =
 
 document.getElementById("themeToggle").onclick = ()=>{
 
-  document.body.classList.toggle("dark");
-
-  localStorage.setItem(
-    "darkMode",
-    document.body.classList.contains("dark")
-  );
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
 
 };
 
@@ -409,22 +407,17 @@ loadCategories();
 
 window.addEventListener("scroll", ()=>{
 
-  const scrollPosition =
-    window.innerHeight + window.scrollY;
+  const topBtn =
+    document.getElementById("themeToggle");
 
-  const pageHeight =
-    document.body.offsetHeight;
+  // 200px以上スクロールしたら表示
+  if(window.scrollY > 200){
 
-  // ページ下部付近で表示
-  if(scrollPosition >= pageHeight - 100){
-
-    document.getElementById("themeToggle")
-      .style.display = "block";
+    topBtn.style.display = "block";
 
   }else{
 
-    document.getElementById("themeToggle")
-      .style.display = "none";
+    topBtn.style.display = "none";
 
   }
 
