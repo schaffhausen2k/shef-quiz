@@ -300,8 +300,7 @@ function finishQuiz(){
     <h2>終了！</h2>
     <p>点数: ${score} / ${quizList.length}</p>
     <p>正答率: ${Math.round(score/quizList.length*100)}%</p>
-    <h3>AI苦手問題分析</h3>
-    <p>${weak.join(" / ") || "なし"}</p>
+
     <button onclick="location.reload()">
 トップへ戻る
 </button>
@@ -408,3 +407,25 @@ if("serviceWorker" in navigator){
 loadCategories();
 
 
+window.addEventListener("scroll", ()=>{
+
+  const scrollPosition =
+    window.innerHeight + window.scrollY;
+
+  const pageHeight =
+    document.body.offsetHeight;
+
+  // ページ下部付近で表示
+  if(scrollPosition >= pageHeight - 100){
+
+    document.getElementById("themeToggle")
+      .style.display = "block";
+
+  }else{
+
+    document.getElementById("themeToggle")
+      .style.display = "none";
+
+  }
+
+});
