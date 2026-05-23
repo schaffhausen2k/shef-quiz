@@ -291,22 +291,63 @@ function nextQuestion(){
 
 function finishQuiz(){
 
-  // 再挑戦モード終了
   retryMode = false;
-
-  const weak = JSON.parse(localStorage.getItem("weakQuestions") || "[]");
 
   document.getElementById("quizArea").innerHTML = `
     <h2>終了！</h2>
     <p>点数: ${score} / ${quizList.length}</p>
     <p>正答率: ${Math.round(score/quizList.length*100)}%</p>
 
-    <button onclick="location.reload()">
-トップへ戻る
+    <button onclick="backToCategory()">
+カテゴリ選択へ戻る
 </button>
   `;
 
 }
+
+function backToCategory(){
+
+  document.getElementById("quizArea").style.display = "none";
+
+  document.getElementById("categoryArea").style.display = "block";
+
+  document.getElementById("quizArea").innerHTML = `
+
+    <h2 id="categoryTitle"></h2>
+
+    <div id="progress"></div>
+
+    <h3 id="question"></h3>
+
+    <div id="imageArea"></div>
+
+    <div id="choices"></div>
+
+    <div id="result"></div>
+
+    <button class="nextBtn" id="submitBtn">回答する</button>
+
+    <button class="nextBtn" id="nextBtn" style="display:none;">
+      次の問題へ
+    </button>
+
+    <div id="explanation"></div>
+
+  `;
+
+  document.getElementById("submitBtn").onclick = submitAnswer;
+
+  document.getElementById("nextBtn").onclick = nextQuestion;
+
+  loadCategories();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
 
 function saveStats(isCorrect, quiz){
 
@@ -368,10 +409,12 @@ document.getElementById("nextBtn").onclick =
 
 document.getElementById("themeToggle").onclick = ()=>{
 
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+  document.body.classList.toggle("dark");
+
+  const isDark =
+    document.body.classList.contains("dark");
+
+  localStorage.setItem("darkMode", isDark);
 
 };
 
@@ -405,20 +448,26 @@ if("serviceWorker" in navigator){
 loadCategories();
 
 
-window.addEventListener("scroll", ()=>{
+document.getElementById("backCategoryBtn").onclick = ()=>{
 
-  const topBtn =
-    document.getElementById("themeToggle");
+  const ok =
+    confirm("カテゴリ選択へ戻りますか？");
 
-  // 200px以上スクロールしたら表示
-  if(window.scrollY > 200){
+  if(!ok) return;
 
-    topBtn.style.display = "block";
+  retryMode = false;
 
-  }else{
+  document.getElementById("quizArea").style.display =
+    "none";
 
-    topBtn.style.display = "none";
+  document.getElementById("categoryArea").style.display =
+    "block";
 
-  }
+  loadCategories();
 
-});
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+};
