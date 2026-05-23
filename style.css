@@ -80,16 +80,16 @@ body.dark .choice{
 }
 
 body.dark .selected{
-  background:#1976D2;
-  color:white;
+  background:#2196F3 !important;
+  color:white !important;
 
-  border:2px solid #64B5F6;
-
-  transform:scale(1.02);
+  border:2px solid #90CAF9 !important;
 
   box-shadow:
-    0 0 0 2px rgba(100,181,246,0.3),
+    0 0 0 2px rgba(144,202,249,0.25),
     0 4px 12px rgba(0,0,0,0.4);
+
+  transform:scale(1.02);
 }
 
 /* 回答状態 */
