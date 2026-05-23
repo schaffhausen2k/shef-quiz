@@ -101,12 +101,45 @@ img{
   color:white;
 
 }
+body.dark .mainExplanation{
+
+  background:#222;
+
+  color:#fff;
+
+  padding:15px;
+
+  border-radius:12px;
+
+  line-height:1.8;
+
+}
+
+body.dark .choiceExplanationItem{
+
+  background:#2d2d2d;
+
+  color:#fff;
+
+  padding:12px;
+
+  margin-top:10px;
+
+  border-radius:10px;
+
+}
+
+body.dark .choiceExplanationTitle{
+
+  color:#ffd54f;
+
+  margin-top:20px;
+
+}
 
 #themeToggle{
 
   display:block !important;
-
-  position:fixed;
 
   right:15px;
 
