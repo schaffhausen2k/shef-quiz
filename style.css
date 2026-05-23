@@ -136,6 +136,13 @@ body.dark .choiceExplanationTitle{
   margin-top:20px;
 
 }
+body.dark .retryBtn{
+
+  background:#ffb74d;
+
+  color:#222;
+
+}
 
 #themeToggle{
 
@@ -158,5 +165,29 @@ body.dark .choiceExplanationTitle{
   color:white;
 
   font-size:14px;
+
+}
+
+.retryBtn{
+
+  display:block;
+
+  width:100%;
+
+  margin-top:30px;
+
+  padding:16px;
+
+  border:none;
+
+  border-radius:14px;
+
+  background:#ff9800;
+
+  color:white;
+
+  font-size:16px;
+
+  font-weight:bold;
 
 }

@@ -42,7 +42,7 @@ function loadCategories(){
 // 間違えた問題だけ再挑戦
 const retryBtn = document.createElement("button");
 
-retryBtn.className = "categoryBtn";
+retryBtn.className = "retryBtn";
 
 retryBtn.innerText =
   `間違えた問題を再挑戦`;
