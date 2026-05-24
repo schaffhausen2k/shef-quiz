@@ -78,7 +78,17 @@ body.dark .choice{
   color:#f5f5f5;
   border:1px solid #555;
 }
+body.dark .correct{
+  background:#4CAF50 !important;
+  color:white !important;
+  border:2px solid #81C784 !important;
+}
 
+body.dark .wrong{
+  background:#f44336 !important;
+  color:white !important;
+  border:2px solid #EF9A9A !important;
+}
 body.dark .selected{
   background:#2196F3 !important;
   color:white !important;
