@@ -13,6 +13,7 @@ let currentQuiz = 0;
 let score = 0;
 let quizList = [];
 let wrongQuestions = JSON.parse(localStorage.getItem("wrongQuestions")) || [];
+let masteredQuestions =  JSON.parse(localStorage.getItem("masteredQuestions")) || [];
 let retryMode = false;
 
 function shuffle(array){
@@ -59,8 +60,20 @@ retryBtn.onclick = () => {
 
   retryMode = true;
 
-  quizList =
-    shuffle([...wrongQuestions.filter(q => q)]);
+quizList =
+ shuffle(
+   wrongQuestions.filter(
+     q => !masteredQuestions.includes(q.question)
+   )
+ );
+
+if(quizList.length === 0){
+
+  alert("再挑戦対象の問題がありません");
+
+  return;
+
+}
 
   currentQuiz = 0;
 
@@ -75,17 +88,44 @@ retryBtn.onclick = () => {
   document.getElementById("categoryTitle").innerText =
     "苦手問題再挑戦";
 
+
+
   loadQuiz();
 
 };
 
 area.appendChild(retryBtn);
 
+const clearMasterBtn =
+  document.createElement("button");
+
+clearMasterBtn.innerText =
+  "覚えた問題を全解除";
+
+clearMasterBtn.onclick = ()=>{
+
+  if(!confirm("覚えた問題をすべて解除しますか？"))
+    return;
+
+  masteredQuestions = [];
+
+  localStorage.removeItem("masteredQuestions");
+
+  alert("解除しました");
+
+};
+
+area.appendChild(clearMasterBtn);
+
 }
 
 function startQuiz(category){
 
-  quizList = shuffle(questionData[category]);
+quizList = shuffle(
+  questionData[category].filter(
+    q => !masteredQuestions.includes(q.question)
+  )
+);
 
   currentQuiz = 0;
   score = 0;
@@ -96,7 +136,15 @@ function startQuiz(category){
 
   document.getElementById("categoryTitle").innerText = category;
 
-  loadQuiz();
+if(quizList.length === 0){
+
+  alert("このカテゴリの問題はすべて覚えた状態です");
+
+  return;
+
+}
+
+loadQuiz();
 
 }
 
@@ -152,6 +200,15 @@ function loadQuiz(){
 document.getElementById("submitBtn").style.display = "block";
 
 document.getElementById("nextBtn").style.display = "none";
+
+const masterBtn =
+  document.getElementById("masterBtn");
+
+if(masteredQuestions.includes(quiz.question)){
+  masterBtn.innerText = "✓ 覚えた済み";
+}else{
+  masterBtn.innerText = "✓ 覚えた";
+}
 
 }
 
@@ -331,6 +388,10 @@ function backToCategory(){
       次の問題へ
     </button>
 
+<button id="masterBtn">
+✓ 覚えた
+</button>
+
     <div id="explanation"></div>
 
   `;
@@ -338,6 +399,8 @@ function backToCategory(){
   document.getElementById("submitBtn").onclick = submitAnswer;
 
   document.getElementById("nextBtn").onclick = nextQuestion;
+
+setupMasterButton();
 
   loadCategories();
 
@@ -446,6 +509,7 @@ if("serviceWorker" in navigator){
 }
 
 loadCategories();
+setupMasterButton();
 
 
 document.getElementById("backCategoryBtn").onclick = ()=>{
@@ -463,11 +527,53 @@ document.getElementById("backCategoryBtn").onclick = ()=>{
   document.getElementById("categoryArea").style.display =
     "block";
 
-  loadCategories();
-
   window.scrollTo({
     top:0,
     behavior:"smooth"
   });
 
 };
+
+function setupMasterButton(){
+
+  document.getElementById("masterBtn").onclick = ()=>{
+
+    const quiz = quizList[currentQuiz];
+
+    // 既に覚えた問題なら解除
+    if(masteredQuestions.includes(quiz.question)){
+
+      masteredQuestions =
+        masteredQuestions.filter(
+          q => q !== quiz.question
+        );
+
+      localStorage.setItem(
+        "masteredQuestions",
+        JSON.stringify(masteredQuestions)
+      );
+
+      document.getElementById("masterBtn").innerText =
+        "✓ 覚えた";
+
+      alert("覚えた登録を解除しました");
+
+      return;
+    }
+
+    // 未登録なら覚えた登録
+    masteredQuestions.push(quiz.question);
+
+    localStorage.setItem(
+      "masteredQuestions",
+      JSON.stringify(masteredQuestions)
+    );
+
+    document.getElementById("masterBtn").innerText =
+      "✓ 覚えた済み";
+
+    alert("覚えた問題に登録しました");
+
+  };
+
+}
