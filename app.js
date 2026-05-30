@@ -4,7 +4,7 @@ const questionData = {
   "食品栄養学（食品学）": syokuhingakuQuestions ,
   "フードセーフティ論": foodsafetyQuestions ,
   "ヘルシーライフ研究" : healthylifeQuestions ,
-  "調理理論"           : choririronQuestions , 
+  "調理理論・調理科学" : choririronQuestions , 
   "世界の食通信"       : sekaiQuestions
 
 };
