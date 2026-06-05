@@ -107,11 +107,15 @@ clearMasterBtn.onclick = ()=>{
   if(!confirm("覚えた問題をすべて解除しますか？"))
     return;
 
-  masteredQuestions = [];
-
-  localStorage.removeItem("masteredQuestions");
+masteredQuestions = [];
+localStorage.setItem(
+  "masteredQuestions",
+  JSON.stringify([])
+);
 
   alert("解除しました");
+
+  loadCategories();
 
 };
 
@@ -121,31 +125,26 @@ area.appendChild(clearMasterBtn);
 
 function startQuiz(category){
 
-quizList = shuffle(
-  questionData[category].filter(
-    q => !masteredQuestions.includes(q.question)
-  )
-);
+  quizList = shuffle(
+    questionData[category].filter(
+      q => !masteredQuestions.includes(q.question)
+    )
+  );
+
+  if(quizList.length === 0){
+    alert("このカテゴリの問題はすべて覚えた状態です");
+    return;
+  }
 
   currentQuiz = 0;
   score = 0;
 
   document.getElementById("categoryArea").style.display = "none";
-
   document.getElementById("quizArea").style.display = "block";
 
   document.getElementById("categoryTitle").innerText = category;
 
-if(quizList.length === 0){
-
-  alert("このカテゴリの問題はすべて覚えた状態です");
-
-  return;
-
-}
-
-loadQuiz();
-
+  loadQuiz();
 }
 
 function loadQuiz(){
