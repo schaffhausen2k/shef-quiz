@@ -349,57 +349,45 @@ function finishQuiz(){
 
   retryMode = false;
 
-  document.getElementById("quizArea").innerHTML = `
-    <h2>終了！</h2>
-    <p>点数: ${score} / ${quizList.length}</p>
-    <p>正答率: ${Math.round(score/quizList.length*100)}%</p>
+  document.getElementById("categoryTitle").innerText = "終了！";
 
-    <button onclick="backToCategory()">
-カテゴリ選択へ戻る
-</button>
+  document.getElementById("progress").innerHTML = "";
+
+  document.getElementById("question").innerHTML = `
+    点数: ${score} / ${quizList.length}<br>
+    正答率: ${Math.round(score / quizList.length * 100)}%
   `;
 
+  document.getElementById("imageArea").innerHTML = "";
+  document.getElementById("choices").innerHTML = "";
+  document.getElementById("result").innerHTML = "";
+  document.getElementById("explanation").innerHTML = "";
+
+  document.getElementById("submitBtn").style.display = "none";
+  document.getElementById("nextBtn").style.display = "none";
+  document.getElementById("masterBtn").style.display = "none";
+  document.getElementById("backCategoryBtn").style.display = "block";
 }
 
 function backToCategory(){
 
-  document.getElementById("quizArea").style.display = "none";
+  retryMode = false;
 
+  document.getElementById("quizArea").style.display = "none";
   document.getElementById("categoryArea").style.display = "block";
 
-  document.getElementById("quizArea").innerHTML = `
+  document.getElementById("categoryTitle").innerText = "";
+  document.getElementById("progress").innerHTML = "";
+  document.getElementById("question").innerHTML = "";
+  document.getElementById("imageArea").innerHTML = "";
+  document.getElementById("choices").innerHTML = "";
+  document.getElementById("result").innerHTML = "";
+  document.getElementById("explanation").innerHTML = "";
 
-    <h2 id="categoryTitle"></h2>
-
-    <div id="progress"></div>
-
-    <h3 id="question"></h3>
-
-    <div id="imageArea"></div>
-
-    <div id="choices"></div>
-
-    <div id="result"></div>
-
-    <button class="nextBtn" id="submitBtn">回答する</button>
-
-    <button class="nextBtn" id="nextBtn" style="display:none;">
-      次の問題へ
-    </button>
-
-<button id="masterBtn">
-✓ 覚えた
-</button>
-
-    <div id="explanation"></div>
-
-  `;
-
-  document.getElementById("submitBtn").onclick = submitAnswer;
-
-  document.getElementById("nextBtn").onclick = nextQuestion;
-
-setupMasterButton();
+  document.getElementById("submitBtn").style.display = "block";
+  document.getElementById("nextBtn").style.display = "none";
+  document.getElementById("masterBtn").style.display = "block";
+  document.getElementById("backCategoryBtn").style.display = "block";
 
   loadCategories();
 
@@ -407,7 +395,6 @@ setupMasterButton();
     top: 0,
     behavior: "smooth"
   });
-
 }
 
 
@@ -518,18 +505,7 @@ document.getElementById("backCategoryBtn").onclick = ()=>{
 
   if(!ok) return;
 
-  retryMode = false;
-
-  document.getElementById("quizArea").style.display =
-    "none";
-
-  document.getElementById("categoryArea").style.display =
-    "block";
-
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+  backToCategory();
 
 };
 
