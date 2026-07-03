@@ -125,6 +125,10 @@ area.appendChild(clearMasterBtn);
 
 function startQuiz(category){
 
+  masteredQuestions = JSON.parse(localStorage.getItem("masteredQuestions")) || [];
+
+  retryMode = false;
+
   quizList = shuffle(
     questionData[category].filter(
       q => !masteredQuestions.includes(q.question)
@@ -143,6 +147,9 @@ function startQuiz(category){
   document.getElementById("quizArea").style.display = "block";
 
   document.getElementById("categoryTitle").innerText = category;
+
+  document.getElementById("masterBtn").style.display = "block";
+  document.getElementById("backCategoryBtn").style.display = "block";
 
   loadQuiz();
 }
@@ -384,10 +391,10 @@ function backToCategory(){
   document.getElementById("result").innerHTML = "";
   document.getElementById("explanation").innerHTML = "";
 
-  document.getElementById("submitBtn").style.display = "block";
+  document.getElementById("submitBtn").style.display = "none";
   document.getElementById("nextBtn").style.display = "none";
-  document.getElementById("masterBtn").style.display = "block";
-  document.getElementById("backCategoryBtn").style.display = "block";
+  document.getElementById("masterBtn").style.display = "none";
+  document.getElementById("backCategoryBtn").style.display = "none";
 
   loadCategories();
 
@@ -514,6 +521,11 @@ function setupMasterButton(){
   document.getElementById("masterBtn").onclick = ()=>{
 
     const quiz = quizList[currentQuiz];
+    if(!quiz) return;
+
+    // 念のため最新状態を取得
+    masteredQuestions =
+      JSON.parse(localStorage.getItem("masteredQuestions")) || [];
 
     // 既に覚えた問題なら解除
     if(masteredQuestions.includes(quiz.question)){
@@ -532,23 +544,38 @@ function setupMasterButton(){
         "✓ 覚えた";
 
       alert("覚えた登録を解除しました");
-
       return;
     }
 
-    // 未登録なら覚えた登録
+    // 未登録なら覚えた登録（重複防止）
     masteredQuestions.push(quiz.question);
+    masteredQuestions = [...new Set(masteredQuestions)];
 
     localStorage.setItem(
       "masteredQuestions",
       JSON.stringify(masteredQuestions)
     );
 
+    // 間違えた問題一覧からも削除
+    wrongQuestions =
+      (JSON.parse(localStorage.getItem("wrongQuestions")) || [])
+      .filter(q => q.question !== quiz.question);
+
+    localStorage.setItem(
+      "wrongQuestions",
+      JSON.stringify(wrongQuestions)
+    );
+
+    // 現在位置より後ろに同じ問題が残っていれば除外
+    quizList = quizList.filter(
+      (q, index) =>
+        index <= currentQuiz || q.question !== quiz.question
+    );
+
     document.getElementById("masterBtn").innerText =
       "✓ 覚えた済み";
 
     alert("覚えた問題に登録しました");
-
   };
 
 }
