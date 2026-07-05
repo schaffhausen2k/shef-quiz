@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=20260705-1">
 <meta name="theme-color" content="#673AB7">
 
 <style>
@@ -190,6 +190,25 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
+<script>
+(function () {
+  const KEY = 'shefQuizCacheCleanup_20260705_1';
+  if (sessionStorage.getItem(KEY)) return;
+  sessionStorage.setItem(KEY, '1');
+  const jobs = [];
+  if ('serviceWorker' in navigator) {
+    jobs.push(navigator.serviceWorker.getRegistrations()
+      .then(rs => Promise.all(rs.map(r => r.unregister()))).catch(() => {}));
+  }
+  if ('caches' in window) {
+    jobs.push(caches.keys()
+      .then(ks => Promise.all(ks.map(k => caches.delete(k)))).catch(() => {}));
+  }
+  Promise.all(jobs).then(() => {
+    if (navigator.serviceWorker && navigator.serviceWorker.controller) location.reload();
+  });
+})();
+</script>
 </head>
 <body class="auth-locked">
 
@@ -263,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <script src="data/healthylife.js?v-999"></script>
 <script src="data/choririron.js"></script>
 <script src="data/sekai.js"></script>
-<script src="app.js"></script>
+<script src="app.js?v=20260705-1"></script>
 
 </body>
 </html>

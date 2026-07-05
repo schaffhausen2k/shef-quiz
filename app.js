@@ -495,26 +495,29 @@ async function loadGoogleSheet(){
 
 }
 
-if("serviceWorker" in navigator){
-
-  navigator.serviceWorker.register("sw.js");
-
+/* 旧キャッシュ競合防止のためService Workerを無効化 */
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations()
+    .then(regs => regs.forEach(reg => reg.unregister()))
+    .catch(() => {});
 }
 
 loadCategories();
 setupMasterButton();
 
 
-document.getElementById("backCategoryBtn").onclick = ()=>{
+const backCategoryBtn = document.getElementById("backCategoryBtn");
+if (backCategoryBtn) {
+  backCategoryBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
 
-  const ok =
-    confirm("カテゴリ選択へ戻りますか？");
+    const ok = confirm("カテゴリ選択へ戻りますか？");
+    if (!ok) return;
 
-  if(!ok) return;
-
-  backToCategory();
-
-};
+    backToCategory();
+  });
+}
 
 function setupMasterButton(){
 

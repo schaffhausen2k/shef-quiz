@@ -261,3 +261,16 @@ body.dark .selected.wrong{
   color:white !important;
   border:2px solid #EF9A9A !important;
 }
+
+/* Windows Chrome / password gate layout fix */
+html, body { width:100%; min-height:100%; box-sizing:border-box; }
+*, *::before, *::after { box-sizing:inherit; }
+body.auth-locked { padding:0 !important; overflow-x:hidden; }
+body.auth-locked #passwordGate {
+  width:100%; min-height:100vh; min-height:100dvh; margin:0;
+}
+body:not(.auth-locked) #passwordGate {
+  display:none !important; pointer-events:none !important; visibility:hidden !important;
+}
+body:not(.auth-locked) .container { position:relative; z-index:1; }
+#backCategoryBtn { position:relative; z-index:5; pointer-events:auto; }
