@@ -88,7 +88,14 @@ body:not(.auth-locked) #passwordGate {
 }
 </style>
 <script>
-document.documentElement.classList.add('auth-checking');
+/*
+  共通パスワード設定
+  現在のパスワード: xxxxxx
+
+  パスワードを変更する場合は、下の PASSWORD_HASH を新しいパスワードのSHA-256に変更し、
+  AUTH_VERSION も v2, v3... のように変更してください。
+  そうすると、すでに認証済みの人にも再入力を求められます。
+*/
 document.addEventListener('DOMContentLoaded', function () {
   const AUTH_VERSION = 'v1';
   const AUTH_KEY = 'shefQuizAuthenticatedVersion';
@@ -171,17 +178,21 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 </head>
-<body>
+<body class="auth-locked">
+
+<noscript>
+  <div style="padding:16px; color:#b00020; font-weight:bold; text-align:center;">
+    このアプリを使うにはJavaScriptを有効にしてください。
+  </div>
+</noscript>
+
 
 <div id="passwordGate">
   <div class="password-card">
-    <h1>上期試験対策</h1>
+    <h1>調理師試験対策クイズ</h1>
     <p>クラス共通のパスワードを入力してください。<br>一度入力すると、次回からは入力不要です。</p>
     <input type="password" id="passwordInput" placeholder="パスワード" autocomplete="current-password">
     <button id="loginBtn" type="button">入る</button>
-    <p><span style="color: red;">※アプリ動作や問題データの保証はしておりません。</span></h1>
-    <p><span style="color: red;">※作者が利用許可した方以外のご利用はご遠慮ください。また利用は自己責任でお願いします。成績を保証するものではありません。</span></h1>
-
     <div id="passwordError" aria-live="polite"></div>
   </div>
 </div>
