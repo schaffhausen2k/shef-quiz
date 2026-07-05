@@ -103,7 +103,7 @@ body:not(.auth-locked) #passwordGate {
 <script>
 /*
   共通パスワード設定
-  現在のパスワード: 2026c1
+  現在のパスワード: xxxxxx
 
   パスワードを変更する場合は、下の PASSWORD_HASH を新しいパスワードのSHA-256に変更し、
   AUTH_VERSION も v2, v3... のように変更してください。
@@ -206,6 +206,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <p>クラス共通のパスワードを入力してください。<br>一度入力すると、次回からは入力不要です。</p>
     <input type="password" id="passwordInput" placeholder="パスワード" autocomplete="current-password">
     <button id="loginBtn" type="button">入る</button>
+    <p>動作および問題データの保証は致しません。作者と面識のある方のみの利用を想定しています。あくまで自己責任でご利用ください。</p>
     <div id="passwordError" aria-live="polite"></div>
   </div>
 </div>
