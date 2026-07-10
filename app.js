@@ -1,3 +1,35 @@
+const APP_CONTENT_VERSION = "20260710-2";
+
+/*
+  問題ファイル更新時のキャッシュ対策。
+  「覚えた問題」「間違えた問題」「成績」などのlocalStorageは削除しません。
+*/
+(async function refreshQuestionFileCache() {
+  const versionKey = "quizAppContentVersion";
+
+  if (localStorage.getItem(versionKey) === APP_CONTENT_VERSION) return;
+
+  try {
+    if ("serviceWorker" in navigator) {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map(registration => registration.unregister()));
+    }
+
+    if ("caches" in window) {
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
+    }
+  } catch (error) {
+    console.warn("キャッシュの更新処理に失敗しました。", error);
+  }
+
+  localStorage.setItem(versionKey, APP_CONTENT_VERSION);
+
+  const url = new URL(window.location.href);
+  url.searchParams.set("v", APP_CONTENT_VERSION);
+  window.location.replace(url.toString());
+})();
+
 
 const questionData = {
   "食品栄養学（栄養学）": eiyougakuQuestions ,
