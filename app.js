@@ -1,4 +1,4 @@
-const APP_CONTENT_VERSION = "20260710-2";
+const APP_CONTENT_VERSION = "20260710-6";
 
 /*
   問題ファイル更新時のキャッシュ対策。
@@ -37,7 +37,8 @@ const questionData = {
   "フードセーフティ論": foodsafetyQuestions ,
   "ヘルシーライフ研究" : healthylifeQuestions ,
   "調理理論・調理科学" : choririronQuestions , 
-  "世界の食通信"       : sekaiQuestions
+  "世界の食通信"       : sekaiQuestions,
+  "ChatGPT予想問題"     : chatgptPredictedQuestions
 
 };
 
@@ -63,6 +64,7 @@ function loadCategories(){
     const btn = document.createElement("button");
 
     btn.className = "categoryBtn";
+    if(category === "ChatGPT予想問題") btn.classList.add("predictedCategoryBtn");
 
     btn.innerText = category;
 
@@ -84,7 +86,7 @@ retryBtn.onclick = () => {
 
   if(wrongQuestions.length === 0){
 
-    alert("まだ間違えた問題がありません！");
+    showAppNotice("まだ間違えた問題がありません！", "warning");
 
     return;
 
@@ -101,7 +103,7 @@ quizList =
 
 if(quizList.length === 0){
 
-  alert("再挑戦対象の問題がありません");
+  showAppNotice("再挑戦対象の問題がありません", "warning");
 
   return;
 
@@ -120,7 +122,9 @@ if(quizList.length === 0){
   document.getElementById("categoryTitle").innerText =
     "苦手問題再挑戦";
 
-
+  // 再挑戦モードでも通常カテゴリと同じ操作ボタンを表示する
+  document.getElementById("masterBtn").style.display = "block";
+  document.getElementById("backCategoryBtn").style.display = "block";
 
   loadQuiz();
 
@@ -135,20 +139,22 @@ clearMasterBtn.innerText =
   "覚えた問題を全解除";
 
 clearMasterBtn.onclick = ()=>{
-
-  if(!confirm("覚えた問題をすべて解除しますか？"))
-    return;
-
-masteredQuestions = [];
-localStorage.setItem(
-  "masteredQuestions",
-  JSON.stringify([])
-);
-
-  alert("解除しました");
-
-  loadCategories();
-
+  showAppConfirm({
+    title: "覚えた問題を全解除",
+    message: "覚えた問題をすべて解除しますか？",
+    confirmText: "全解除する",
+    cancelText: "キャンセル",
+    danger: true,
+    onConfirm: () => {
+      masteredQuestions = [];
+      localStorage.setItem(
+        "masteredQuestions",
+        JSON.stringify([])
+      );
+      showAppNotice("覚えた問題をすべて解除しました", "success");
+      loadCategories();
+    }
+  });
 };
 
 area.appendChild(clearMasterBtn);
@@ -168,7 +174,7 @@ function startQuiz(category){
   );
 
   if(quizList.length === 0){
-    alert("このカテゴリの問題はすべて覚えた状態です");
+    showAppNotice("このカテゴリの問題はすべて覚えた状態です", "info");
     return;
   }
 
@@ -538,17 +544,217 @@ loadCategories();
 setupMasterButton();
 
 
+
+// ブラウザ標準のalert()/confirm()を使わないアプリ内通知
+function showAppNotice(message, type = "info"){
+  const existing = document.getElementById("appNoticeToast");
+  if(existing) existing.remove();
+
+  const toast = document.createElement("div");
+  toast.id = "appNoticeToast";
+  toast.setAttribute("role", "status");
+  toast.setAttribute("aria-live", "polite");
+
+  const marks = {
+    success: "✓",
+    warning: "!",
+    info: "i"
+  };
+
+  toast.innerHTML = `
+    <span aria-hidden="true" style="font-weight:800;font-size:1.1rem;">${marks[type] || "i"}</span>
+    <span>${message}</span>
+  `;
+
+  toast.style.cssText = `
+    position: fixed;
+    left: 50%;
+    bottom: max(24px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    z-index: 11000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: max-content;
+    max-width: min(90vw, 520px);
+    padding: 13px 18px;
+    border-radius: 12px;
+    background: rgba(35, 35, 40, 0.96);
+    color: #fff;
+    box-shadow: 0 8px 28px rgba(0,0,0,.28);
+    font-weight: 700;
+    line-height: 1.45;
+    text-align: left;
+  `;
+
+  document.body.appendChild(toast);
+  window.setTimeout(() => {
+    if(toast.isConnected) toast.remove();
+  }, 2400);
+}
+
+function showAppConfirm({
+  title = "確認",
+  message = "実行しますか？",
+  confirmText = "実行する",
+  cancelText = "キャンセル",
+  danger = false,
+  onConfirm = () => {},
+  onCancel = () => {}
+} = {}){
+  const existing = document.getElementById("appConfirmDialogOverlay");
+  if(existing) existing.remove();
+
+  const overlay = document.createElement("div");
+  overlay.id = "appConfirmDialogOverlay";
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0,0,0,.56);
+  `;
+
+  const dialog = document.createElement("div");
+  dialog.setAttribute("role", "dialog");
+  dialog.setAttribute("aria-modal", "true");
+  dialog.setAttribute("aria-labelledby", "appConfirmDialogTitle");
+  dialog.style.cssText = `
+    width: min(92vw, 430px);
+    padding: 24px;
+    border-radius: 15px;
+    background: var(--card-bg, #fff);
+    color: inherit;
+    box-shadow: 0 14px 40px rgba(0,0,0,.34);
+    text-align: center;
+  `;
+
+  dialog.innerHTML = `
+    <div id="appConfirmDialogTitle" style="font-size:1.15rem;font-weight:800;margin-bottom:12px;">
+      ${title}
+    </div>
+    <div style="line-height:1.65;margin-bottom:22px;white-space:pre-wrap;">${message}</div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button type="button" id="appConfirmCancelBtn" style="min-width:120px;padding:12px 16px;">
+        ${cancelText}
+      </button>
+      <button type="button" id="appConfirmOkBtn" style="min-width:120px;padding:12px 16px;${danger ? 'background:#c62828;color:#fff;border:none;' : ''}">
+        ${confirmText}
+      </button>
+    </div>
+  `;
+
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+
+  const close = () => {
+    document.removeEventListener("keydown", onKeydown);
+    overlay.remove();
+  };
+  const cancel = () => {
+    close();
+    onCancel();
+  };
+  const confirmAction = () => {
+    close();
+    onConfirm();
+  };
+  const onKeydown = (event) => {
+    if(event.key === "Escape") cancel();
+  };
+
+  document.addEventListener("keydown", onKeydown);
+  document.getElementById("appConfirmCancelBtn").onclick = cancel;
+  document.getElementById("appConfirmOkBtn").onclick = confirmAction;
+  overlay.addEventListener("click", (event) => {
+    if(event.target === overlay) cancel();
+  });
+  document.getElementById("appConfirmOkBtn").focus();
+}
+
 const backCategoryBtn = document.getElementById("backCategoryBtn");
 if (backCategoryBtn) {
   backCategoryBtn.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
-
-    const ok = confirm("カテゴリ選択へ戻りますか？");
-    if (!ok) return;
-
-    backToCategory();
+    showBackCategoryDialog();
   });
+}
+
+// ブラウザ標準のconfirm()は「今後ダイアログを表示しない」を選ぶと
+// 以後の操作が止まることがあるため、アプリ内の確認画面を使用する。
+function showBackCategoryDialog(){
+  if(document.getElementById("backCategoryDialogOverlay")) return;
+
+  const overlay = document.createElement("div");
+  overlay.id = "backCategoryDialogOverlay";
+  overlay.style.cssText = `
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+  `;
+
+  const dialog = document.createElement("div");
+  dialog.setAttribute("role", "dialog");
+  dialog.setAttribute("aria-modal", "true");
+  dialog.setAttribute("aria-labelledby", "backCategoryDialogTitle");
+  dialog.style.cssText = `
+    width: min(92vw, 420px);
+    padding: 24px;
+    border-radius: 14px;
+    background: var(--card-bg, #ffffff);
+    color: inherit;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+    text-align: center;
+  `;
+
+  dialog.innerHTML = `
+    <div id="backCategoryDialogTitle" style="font-size:1.1rem;font-weight:700;margin-bottom:20px;">
+      カテゴリ選択へ戻りますか？
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center;">
+      <button type="button" id="cancelBackCategoryBtn" style="min-width:110px;padding:12px 16px;">
+        キャンセル
+      </button>
+      <button type="button" id="confirmBackCategoryBtn" style="min-width:110px;padding:12px 16px;">
+        戻る
+      </button>
+    </div>
+  `;
+
+  overlay.appendChild(dialog);
+  document.body.appendChild(overlay);
+
+  const closeDialog = () => {
+    document.removeEventListener("keydown", handleKeydown);
+    overlay.remove();
+  };
+
+  const handleKeydown = (event) => {
+    if(event.key === "Escape") closeDialog();
+  };
+
+  document.addEventListener("keydown", handleKeydown);
+
+  document.getElementById("cancelBackCategoryBtn").onclick = closeDialog;
+  document.getElementById("confirmBackCategoryBtn").onclick = () => {
+    closeDialog();
+    backToCategory();
+  };
+
+  overlay.addEventListener("click", (event) => {
+    if(event.target === overlay) closeDialog();
+  });
+
+  document.getElementById("confirmBackCategoryBtn").focus();
 }
 
 function setupMasterButton(){
@@ -578,7 +784,7 @@ function setupMasterButton(){
       document.getElementById("masterBtn").innerText =
         "✓ 覚えた";
 
-      alert("覚えた登録を解除しました");
+      showAppNotice("覚えた登録を解除しました", "info");
       return;
     }
 
@@ -610,7 +816,7 @@ function setupMasterButton(){
     document.getElementById("masterBtn").innerText =
       "✓ 覚えた済み";
 
-    alert("覚えた問題に登録しました");
+    showAppNotice("覚えた問題に登録しました", "success");
   };
 
 }

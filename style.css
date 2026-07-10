@@ -274,3 +274,8 @@ body:not(.auth-locked) #passwordGate {
 }
 body:not(.auth-locked) .container { position:relative; z-index:1; }
 #backCategoryBtn { position:relative; z-index:5; pointer-events:auto; }
+
+
+.categoryBtn.predictedCategoryBtn{background:#00897B;color:white;font-weight:bold;}
+.categoryBtn.predictedCategoryBtn:hover{background:#00796B;opacity:1;}
+body.dark .categoryBtn.predictedCategoryBtn{background:#26A69A;color:#111;}
