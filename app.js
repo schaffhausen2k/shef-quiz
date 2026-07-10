@@ -38,7 +38,7 @@ const questionData = {
   "ヘルシーライフ研究" : healthylifeQuestions ,
   "調理理論・調理科学" : choririronQuestions , 
   "世界の食通信"       : sekaiQuestions,
-  "ChatGPT予想問題"     : chatgptPredictedQuestions
+  "ChatGPT出題予想"     : chatgptPredictedQuestions
 
 };
 
