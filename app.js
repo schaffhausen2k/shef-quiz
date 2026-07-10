@@ -64,7 +64,7 @@ function loadCategories(){
     const btn = document.createElement("button");
 
     btn.className = "categoryBtn";
-    if(category === "ChatGPT予想問題") btn.classList.add("predictedCategoryBtn");
+    if(category === "ChatGPT出題予想") btn.classList.add("predictedCategoryBtn");
 
     btn.innerText = category;
 
