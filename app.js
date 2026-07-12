@@ -32,6 +32,7 @@ const APP_CONTENT_VERSION = "20260710-6";
 
 
 const questionData = {
+  "まとめ問題（試験対策）": summaryExamQuestions,
   "食品栄養学（栄養学）": eiyougakuQuestions ,
   "食品栄養学（食品学）": syokuhingakuQuestions ,
   "フードセーフティ論": foodsafetyQuestions ,
@@ -64,7 +65,8 @@ function loadCategories(){
     const btn = document.createElement("button");
 
     btn.className = "categoryBtn";
-    if(category === "ChatGPT出題予想") btn.classList.add("predictedCategoryBtn");
+    if(questionData[category] === summaryExamQuestions) btn.classList.add("summaryCategoryBtn");
+    if(questionData[category] === chatgptPredictedQuestions) btn.classList.add("predictedCategoryBtn");
 
     btn.innerText = category;
 

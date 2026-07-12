@@ -16,7 +16,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="style.css?v=20260705-1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<link id="appStylesheet" rel="stylesheet" href="style.css">
 <meta name="theme-color" content="#673AB7">
 
 <style>
@@ -287,14 +290,118 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 
 
-<script src="data/eiyougaku.js?v=20260710-7"></script>
-<script src="data/syokuhingaku.js?v=20260710-7"></script>
-<script src="data/foodsafety.js?v=20260710-7"></script>
-<script src="data/healthylife.js?v=20260710-7"></script>
-<script src="data/choririron.js?v=20260710-7"></script>
-<script src="data/sekai.js?v=20260710-7"></script>
-<script src="data/chatgpt_yosou_200.js?v=20260710-7"></script>
-<script src="app.js?v=20260710-7"></script>
+
+
+<script>
+(async function bootstrapQuizApp(){
+  const VERSION_STORAGE_KEY = "shefQuizServerVersion";
+  const CHECK_INTERVAL_MS = 5 * 60 * 1000;
+  const assetFiles = [
+    "data/eiyougaku.js",
+    "data/syokuhingaku.js",
+    "data/foodsafety.js",
+    "data/healthylife.js",
+    "data/choririron.js",
+    "data/sekai.js",
+    "data/summary_exam_questions.js",
+    "data/chatgpt_yosou_200.js",
+    "app.js"
+  ];
+
+  async function getServerVersion(){
+    const response = await fetch(`version.json?t=${Date.now()}`, {
+      cache: "no-store",
+      headers: { "Cache-Control": "no-cache" }
+    });
+    if(!response.ok) throw new Error(`version.json: ${response.status}`);
+    const data = await response.json();
+    if(!data.version) throw new Error("versionが設定されていません");
+    return String(data.version);
+  }
+
+  async function clearBrowserCaches(){
+    try {
+      if("serviceWorker" in navigator){
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map(registration => registration.unregister()));
+      }
+      if("caches" in window){
+        const names = await caches.keys();
+        await Promise.all(names.map(name => caches.delete(name)));
+      }
+    } catch(error){
+      console.warn("キャッシュ削除に失敗しました", error);
+    }
+  }
+
+  function loadScript(src){
+    return new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.async = false;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error(`${src} を読み込めませんでした`));
+      document.body.appendChild(script);
+    });
+  }
+
+  let serverVersion;
+  try {
+    serverVersion = await getServerVersion();
+  } catch(error){
+    console.warn("更新番号を取得できなかったため、保存済み番号で起動します", error);
+    serverVersion = localStorage.getItem(VERSION_STORAGE_KEY) || "fallback-1";
+  }
+
+  const savedVersion = localStorage.getItem(VERSION_STORAGE_KEY);
+  if(savedVersion && savedVersion !== serverVersion){
+    await clearBrowserCaches();
+  }
+
+  window.__APP_SERVER_VERSION__ = serverVersion;
+  const encodedVersion = encodeURIComponent(serverVersion);
+  const stylesheet = document.getElementById("appStylesheet");
+  if(stylesheet) stylesheet.href = `style.css?v=${encodedVersion}`;
+
+  try {
+    for(const file of assetFiles){
+      await loadScript(`${file}?v=${encodedVersion}`);
+    }
+    localStorage.setItem(VERSION_STORAGE_KEY, serverVersion);
+  } catch(error){
+    console.error(error);
+    document.body.insertAdjacentHTML("afterbegin",
+      '<div style="padding:14px;background:#b71c1c;color:white;text-align:center;font-weight:bold;">最新版の読み込みに失敗しました。通信状態を確認して再読み込みしてください。</div>');
+    return;
+  }
+
+  let checking = false;
+  async function checkForServerUpdate(){
+    if(checking) return;
+    checking = true;
+    try {
+      const latestVersion = await getServerVersion();
+      if(latestVersion !== serverVersion){
+        await clearBrowserCaches();
+        localStorage.setItem(VERSION_STORAGE_KEY, latestVersion);
+        const url = new URL(location.href);
+        url.searchParams.set("appVersion", latestVersion);
+        location.replace(url.toString());
+      }
+    } catch(error){
+      console.warn("更新確認に失敗しました", error);
+    } finally {
+      checking = false;
+    }
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if(document.visibilityState === "visible") checkForServerUpdate();
+  });
+  window.addEventListener("pageshow", checkForServerUpdate);
+  setInterval(checkForServerUpdate, CHECK_INTERVAL_MS);
+})();
+</script>
 
 </body>
 </html>

@@ -279,3 +279,9 @@ body:not(.auth-locked) .container { position:relative; z-index:1; }
 .categoryBtn.predictedCategoryBtn{background:#00897B;color:white;font-weight:bold;}
 .categoryBtn.predictedCategoryBtn:hover{background:#00796B;opacity:1;}
 body.dark .categoryBtn.predictedCategoryBtn{background:#26A69A;color:#111;}
+
+
+/* まとめ問題（試験対策）カテゴリ専用 */
+.categoryBtn.summaryCategoryBtn{background:#C62828;color:white;font-weight:bold;border:2px solid #FFCDD2;}
+.categoryBtn.summaryCategoryBtn:hover{background:#B71C1C;opacity:1;}
+body.dark .categoryBtn.summaryCategoryBtn{background:#EF5350;color:#111;border-color:#FFCDD2;}
