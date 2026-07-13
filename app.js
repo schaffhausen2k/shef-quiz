@@ -1,4 +1,4 @@
-const APP_CONTENT_VERSION = "20260710-6";
+const APP_CONTENT_VERSION = "20260713-2";
 
 /*
   問題ファイル更新時のキャッシュ対策。
