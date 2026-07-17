@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="app-loading">
 <head>
 
 <!-- Google tag (gtag.js) -->
@@ -23,6 +23,16 @@
 <meta name="theme-color" content="#673AB7">
 
 <style>
+/* アプリ本体は、問題データとJavaScriptの読み込み完了後に表示する */
+html.app-loading body:not(.auth-locked) .container {
+  visibility: hidden !important;
+}
+
+/* パスワード画面は読み込み中でも表示する */
+html.app-loading body.auth-locked #passwordGate {
+  visibility: visible !important;
+}
+
 /* パスワードガード用 */
 body.auth-locked .container {
   display: none !important;
@@ -368,10 +378,16 @@ document.addEventListener('DOMContentLoaded', function () {
       await loadScript(`${file}?v=${encodedVersion}`);
     }
     localStorage.setItem(VERSION_STORAGE_KEY, serverVersion);
+
+    // カテゴリ生成まで完了してから、アプリ全体を一度に表示する
+    requestAnimationFrame(() => {
+      document.documentElement.classList.remove("app-loading");
+    });
   } catch(error){
     console.error(error);
     document.body.insertAdjacentHTML("afterbegin",
       '<div style="padding:14px;background:#b71c1c;color:white;text-align:center;font-weight:bold;">最新版の読み込みに失敗しました。通信状態を確認して再読み込みしてください。</div>');
+    document.documentElement.classList.remove("app-loading");
     return;
   }
 
